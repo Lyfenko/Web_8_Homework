@@ -2,12 +2,19 @@ import json
 import re
 import redis
 from mongoengine import connect, Document, StringField, ListField, ReferenceField
+from configparser import ConfigParser
 
-connect(
-    host="mongodb+srv://lyfenko:KBATYRj2@cluster0.au6w27m.mongodb.net/database_name?retryWrites=true&w=majority"
-)
+config = ConfigParser()
+config.read('config.ini')
 
-cache = redis.Redis(host="localhost", port=6379, db=0)
+mongo_host = config.get('mongodb', 'host')
+redis_host = config.get('redis', 'host')
+redis_port = config.get('redis', 'port')
+redis_db = config.get('redis', 'db')
+
+connect(host=mongo_host)
+
+cache = redis.Redis(host=redis_host, port=redis_port, db=redis_db)
 
 
 class Author(Document):
